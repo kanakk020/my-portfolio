@@ -11,11 +11,8 @@ This portfolio was created to serve as an online resume and project showcase. It
 
 ---
 
-## 🌐 Live Site
-
-👉 [kanaksainiportfolio.netlify.app](https://kanaksainiportfolio.netlify.app/)
-
----
+🌐 **Live Site:**
+👉 [kanaksainiportfolio.vercel.app](https://kanaksainiportfolio.vercel.app/)
 
 ## 🛠 Tech Stack
 
