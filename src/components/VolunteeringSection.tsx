@@ -36,9 +36,9 @@ const volunteeringEvents: VolunteeringEvent[] = [
 
   {
     id: 3,
-    name: "TFUG DELHI",
+    name: "AI Community",
     role: "Event Management",
-    description: "Volunteered in event management at TFUG Delhi, supporting the organization of tech events, workshops, and community meetups. Assisted with logistics, speaker coordination, and audience engagement to ensure smooth event execution. Helped foster a collaborative environment where developers could explore Google technologies and share insights with the community.",
+    description: "Volunteered in event management at AI community, supporting the organization of tech events, workshops, and community meetups. Assisted with logistics, speaker coordination, and audience engagement to ensure smooth event execution. Helped foster a collaborative environment where developers could explore Google technologies and share insights with the community.",
     image: "/images/tfug.jpg",
   },
 ];
