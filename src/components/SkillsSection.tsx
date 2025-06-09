@@ -136,11 +136,12 @@ const SkillsSection = () => {
   return (
     <section
       id="skills"
-      className="py-20 bg-[#d1cee2] relative overflow-hidden flex items-center justify-center"
+      className="py-12 md:py-20 bg-[#d1cee2] relative overflow-hidden flex items-center justify-center"
     >
       <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] bg-center opacity-10"></div>
 
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Background animations - hidden on mobile */}
+      <div className="absolute inset-0 overflow-hidden hidden md:block">
         <div className="absolute top-10 left-10 w-32 h-32 bg-portfolio-primary/5 rounded-full blur-3xl animate-pulse"></div>
         <div
           className="absolute bottom-20 right-20 w-40 h-40 bg-portfolio-secondary/5 rounded-full blur-3xl animate-pulse"
@@ -153,15 +154,15 @@ const SkillsSection = () => {
       </div>
 
       <div className="container mx-auto px-4 relative">
-        <div className="flex flex-col md:flex-row justify-center items-start gap-16">
+        <div className="flex flex-col md:flex-row justify-center items-start gap-8 md:gap-16">
           {/* My Skills */}
-          <div className="container mx-auto px-4 flex flex-col items-center justify-center max-w-3xl">
-          <h2 className="section-heading mb-10">My Skills</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 justify-center">
+          <div className="w-full md:w-1/2 flex flex-col items-center">
+            <h2 className="section-heading mb-8 md:mb-10 text-center">My Skills</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 w-full max-w-lg">
               {skills.map((skill) => (
                 <div
                   key={skill.name}
-                  className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300 transform opacity-0 animate-fade-in"
+                  className="bg-white rounded-lg shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300 transform opacity-0 animate-fade-in"
                   style={{
                     animationDelay: `${skill.delay}ms`,
                     animationFillMode: 'forwards',
@@ -169,25 +170,25 @@ const SkillsSection = () => {
                   }}
                 >
                   <div
-                    className="mb-4 transform transition-transform duration-300 hover:scale-125"
+                    className="mb-3 sm:mb-4 transform transition-transform duration-300 hover:scale-125"
                     style={{ color: skill.color }}
                   >
                     {skill.icon}
                   </div>
-                  <span className="font-medium">{skill.name}</span>
+                  <span className="text-sm sm:text-base font-medium">{skill.name}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* My Tools */}
-          <div className="container mx-auto px-4 flex flex-col items-center justify-center max-w-3xl">
-          <h2 className="section-heading mb-10">My Tools</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 justify-center">
+          <div className="w-full md:w-1/2 flex flex-col items-center mt-12 md:mt-0">
+            <h2 className="section-heading mb-8 md:mb-10 text-center">My Tools</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6 w-full max-w-lg">
               {tools.map((tool) => (
                 <div
                   key={tool.name}
-                  className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300 transform opacity-0 animate-fade-in"
+                  className="bg-white rounded-lg shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300 transform opacity-0 animate-fade-in"
                   style={{
                     animationDelay: `${tool.delay}ms`,
                     animationFillMode: 'forwards',
@@ -195,12 +196,12 @@ const SkillsSection = () => {
                   }}
                 >
                   <div
-                    className="mb-4 transform transition-transform duration-300 hover:scale-125"
+                    className="mb-3 sm:mb-4 transform transition-transform duration-300 hover:scale-125"
                     style={{ color: tool.color }}
                   >
                     {tool.icon}
                   </div>
-                  <span className="font-medium">{tool.name}</span>
+                  <span className="text-sm sm:text-base font-medium">{tool.name}</span>
                 </div>
               ))}
             </div>
