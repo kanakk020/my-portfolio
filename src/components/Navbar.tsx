@@ -100,8 +100,8 @@ const Navbar = () => {
             </NavigationMenu>
 
             <a
-  href="/public/kanakresume.pdf"
-  download // <-- Add this attribute
+  href="/kanakresume.pdf"
+  download
   className="ml-6 flex items-center gap-1.5 text-sm font-medium text-purple-900 bg-purple-100 hover:bg-purple-200 px-4 py-2 rounded-md transition-all duration-300 transform hover:scale-105"
 >
   <FileText size={16} className="animate-pulse" style={{ animationDuration: '3s' }} />
@@ -113,7 +113,7 @@ const Navbar = () => {
           {/* Mobile Navigation Toggle */}
           <div className="md:hidden flex items-center">
             <a
-              href="/public/kanakresume.pdf"
+              href="/kanakresume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="mr-4 flex items-center gap-1 text-sm font-medium text-purple-900"
