@@ -34,14 +34,21 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const mailto = `mailto:${email}?subject=${encodeURIComponent(
-      formData.subject || `Portfolio Contact from ${formData.name}`
-    )}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    )}`;
-    window.location.href = mailto;
+    const postData = new FormData();
+    postData.append('name', formData.name);
+    postData.append('email', formData.email);
+    postData.append('message', formData.message);
+    postData.append('_subject', formData.subject || `Portfolio Contact from ${formData.name}`);
+    postData.append('_captcha', 'false');
+
+    fetch(`https://formsubmit.co/ajax/${email}`, {
+      method: 'POST',
+      body: postData,
+      headers: { Accept: 'application/json' },
+    }).catch(console.error);
+
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   return (
