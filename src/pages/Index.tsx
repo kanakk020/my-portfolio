@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
@@ -11,61 +10,81 @@ import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
-  // Add scroll reveal effect for sections
+  // Lightweight Intersection Observer for subtle scroll reveals
   useEffect(() => {
-    const revealSections = () => {
-      const sections = document.querySelectorAll('section');
-      
-      sections.forEach((section, index) => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        
-        if (sectionTop < windowHeight * 0.75) {
-          section.classList.add('animate-fade-in');
-          section.style.opacity = '1';
-          // Add staggered entrance for each section
-          section.style.animationDelay = `${index * 0.1}s`;
-        }
-      });
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            entry.target.classList.remove('opacity-0', 'translate-y-5');
+          }
+        });
+      },
+      {
+        threshold: 0.05,
+        rootMargin: '0px 0px -20px 0px',
+      }
+    );
 
-    // Add parallax effect for background elements
-    const parallaxEffect = () => {
-      const scrollY = window.scrollY;
-      const parallaxElements = document.querySelectorAll('.parallax');
-      
-      parallaxElements.forEach(element => {
-        const speed = element.getAttribute('data-speed') || '0.5';
-        const yPos = -(scrollY * parseFloat(speed));
-        element.style.transform = `translateY(${yPos}px)`;
-      });
-    };
+    const sections = document.querySelectorAll('.scroll-reveal');
+    sections.forEach((section) => {
+      section.classList.add('transition-all', 'duration-500', 'opacity-0', 'translate-y-5');
+      observer.observe(section);
+    });
 
-    // Initial check
-    revealSections();
-    parallaxEffect();
-    
-    // Add event listeners
-    window.addEventListener('scroll', revealSections);
-    window.addEventListener('scroll', parallaxEffect);
-    
-    return () => {
-      window.removeEventListener('scroll', revealSections);
-      window.removeEventListener('scroll', parallaxEffect);
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#050807] text-[#F5F7F5] selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden relative">
+      {/* Background Subtle Ambient Lighting */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1100px] h-[400px] bg-emerald-500/4 blur-[130px] pointer-events-none -z-10"></div>
+      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-emerald-700/4 blur-[130px] pointer-events-none -z-10"></div>
+      <div className="fixed inset-0 bg-noise opacity-20 pointer-events-none -z-10"></div>
+
+      {/* Sticky / Fixed Navigation Bar */}
       <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <VolunteeringSection />
-      <HackathonsSection />
-      <ContactSection />
-      <Footer />
+
+      <main className="w-full relative z-10">
+        {/* 1. Hero Section */}
+        <HeroSection />
+
+        {/* 2. About Me Section */}
+        <div className="scroll-reveal">
+          <AboutSection />
+        </div>
+
+        {/* 3. Skills Section */}
+        <div className="scroll-reveal">
+          <SkillsSection />
+        </div>
+
+        {/* 4. Featured Projects Section */}
+        <div className="scroll-reveal">
+          <ProjectsSection />
+        </div>
+
+        {/* 5. Experience & Community Section */}
+        <div className="scroll-reveal">
+          <VolunteeringSection />
+        </div>
+
+        {/* 6. Achievements Section */}
+        <div className="scroll-reveal">
+          <HackathonsSection />
+        </div>
+
+        {/* 7. Contact Section */}
+        <div className="scroll-reveal">
+          <ContactSection />
+        </div>
+
+        {/* Footer with Scenic Quote Banner */}
+        <div className="scroll-reveal">
+          <Footer />
+        </div>
+      </main>
     </div>
   );
 };

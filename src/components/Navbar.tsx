@@ -1,25 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X, Code, FileText } from 'lucide-react';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle
-} from "@/components/ui/navigation-menu";
+import { Menu, X, ArrowRight, Download, Sparkles } from 'lucide-react';
 
-const navLinks = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Volunteer', href: '#volunteering' },
-  { name: 'Hackathons', href: '#hackathons' },
-  { name: 'Contact', href: '#contact' },
+const navItems = [
+  { name: 'Home', id: 'home' },
+  { name: 'About', id: 'about' },
+  { name: 'Skills', id: 'skills' },
+  { name: 'Projects', id: 'projects' },
+  { name: 'Experience', id: 'experience' },
+  { name: 'Achievements', id: 'achievements' },
+  { name: 'Contact', id: 'contact' },
 ];
 
 const Navbar = () => {
@@ -29,131 +19,171 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 40);
 
-      const sections = navLinks.map(link => link.href.substring(1));
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 150 && rect.bottom >= 150;
+      // Scroll Spy for active section indicator
+      const scrollPosition = window.scrollY + 200;
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        const section = document.getElementById(navItems[i].id);
+        if (section) {
+          const top = section.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(navItems[i].id);
+            break;
+          }
         }
-        return false;
-      });
-
-      if (currentSection) {
-        setActiveSection(currentSection);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (id: string) => {
+    setIsOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const navOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
-    <nav
+    <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-500',
-        isScrolled ? 'bg-white/30 backdrop-blur-md shadow' : 'bg-transparent'
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-3 md:py-4 px-4 sm:px-6 lg:px-8',
+        isScrolled
+          ? 'bg-[#050807]/90 backdrop-blur-xl border-b border-emerald-950/40 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)]'
+          : 'bg-[#050807]/50 backdrop-blur-md border-b border-emerald-950/20'
       )}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Brand / Logo linking to Top */}
+        <button
+          onClick={() => scrollToSection('home')}
+          className="group flex items-center gap-2 select-none text-left"
+        >
+          <span className="font-script text-3xl sm:text-4xl font-semibold tracking-wide text-white transition-all duration-300 group-hover:scale-105">
+            Kanak <span className="text-emerald-400 drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]">Saini</span>
+          </span>
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        </button>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden xl:flex items-center gap-1 bg-[#09130e]/85 border border-emerald-500/15 rounded-full px-3 py-1.5 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={cn(
+                  'px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-300 relative',
+                  isActive
+                    ? 'text-emerald-300 bg-emerald-950/80 border border-emerald-500/35 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                    : 'text-gray-300 hover:text-white hover:bg-emerald-950/30'
+                )}
+              >
+                {item.name}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Action Buttons */}
+        <div className="hidden sm:flex items-center gap-3">
+          {/* Download Resume Button */}
           <a
-            href="#home"
-            className="text-xl font-bold text-purple-900 group flex items-center gap-2 transition-all duration-300"
+            href="/kanakresume.pdf"
+            download="Kanak_Saini_Resume.pdf"
+            className="btn-glass text-xs sm:text-sm !py-2 !px-3.5 border-emerald-500/20 hover:border-emerald-500/40"
+            title="Download Resume PDF"
           >
-            <Code size={28} className="text-purple-900 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="group-hover:text-purple-800 text-black">KANAK SAINI</span>
+            <Download size={14} className="text-emerald-400" />
+            <span className="hidden sm:inline">Resume</span>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center">
-            <NavigationMenu>
-              <NavigationMenuList className="flex space-x-2">
-                {navLinks.map((link) => (
-                  <NavigationMenuItem key={link.name}>
-                    <a
-                      href={link.href}
-                      className={cn(
-                        "px-3 py-2 text-sm rounded-md transition-all duration-300 relative group flex items-center",
-                        activeSection === link.href.substring(1)
-                          ? "text-purple-900 font-medium"
-                          : "text-gray-700 hover:text-purple-900"
-                      )}
-                    >
-                      {link.name}
-                      <span
-                        className={cn(
-                          "absolute bottom-0 left-0 w-full h-0.5 bg-purple-900 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left",
-                          activeSection === link.href.substring(1) && "scale-x-100"
-                        )}
-                      />
-                    </a>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+          {/* Let's Connect CTA */}
+          <button
+            onClick={() => scrollToSection('contact')}
+            className="btn-emerald text-xs sm:text-sm !py-2 !px-4 shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+          >
+            <span>Let's Connect</span>
+            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </button>
+        </div>
 
-            <a
-  href="/kanakresume.pdf"
-  download
-  className="ml-6 flex items-center gap-1.5 text-sm font-medium text-purple-900 bg-purple-100 hover:bg-purple-200 px-4 py-2 rounded-md transition-all duration-300 transform hover:scale-105"
->
-  <FileText size={16} className="animate-pulse" style={{ animationDuration: '3s' }} />
-  Resume
-</a>
+        {/* Mobile Menu Button */}
+        <div className="flex xl:hidden items-center gap-2">
+          <a
+            href="/kanakresume.pdf"
+            download="Kanak_Saini_Resume.pdf"
+            className="p-2 rounded-full bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs"
+            aria-label="Download Resume"
+          >
+            <Download size={16} />
+          </a>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 rounded-lg bg-[#0a1510] border border-emerald-500/25 text-emerald-300 focus:outline-none"
+            aria-label="Toggle Navigation Menu"
+          >
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </div>
 
+      {/* Mobile Drawer Menu */}
+      {isOpen && (
+        <div className="xl:hidden mt-3 bento-card p-4 mx-2 bg-[#07110c]/95 border-emerald-500/30 animate-fade-in shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
+          <div className="grid grid-cols-2 gap-1.5">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={cn(
+                    'px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center justify-between text-left',
+                    isActive
+                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/35 font-semibold'
+                      : 'text-gray-300 hover:bg-emerald-950/30 hover:text-white'
+                  )}
+                >
+                  <span>{item.name}</span>
+                  {isActive && <Sparkles size={12} className="text-emerald-400" />}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Mobile Navigation Toggle */}
-          <div className="md:hidden flex items-center">
+          <div className="pt-3 mt-3 border-t border-emerald-950/50 flex flex-col sm:flex-row gap-2">
             <a
               href="/kanakresume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mr-4 flex items-center gap-1 text-sm font-medium text-purple-900"
+              download="Kanak_Saini_Resume.pdf"
+              className="btn-glass text-xs justify-center py-2.5 flex-1"
             >
-              <FileText size={16} />
-              <span className="sr-only md:not-sr-only">Resume</span>
+              <Download size={14} className="text-emerald-400" />
+              Download Resume
             </a>
-
             <button
-              className="text-gray-700 focus:outline-none hover:text-purple-900 transition-colors duration-300"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle navigation menu"
+              onClick={() => scrollToSection('contact')}
+              className="btn-emerald text-xs justify-center py-2.5 flex-1"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              <span>Let's Connect</span>
+              <ArrowRight size={14} />
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation Menu */}
-        {isOpen && (
-          <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg py-4 px-2 animate-fade-in">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className={cn(
-                  "block py-2 px-4 rounded-md transition-all duration-300",
-                  activeSection === link.href.substring(1)
-                    ? "bg-purple-100 text-purple-900 font-medium"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-purple-900"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </nav>
+      )}
+    </header>
   );
 };
 
