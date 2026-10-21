@@ -37,43 +37,66 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch(`https://formsubmit.co/ajax/${email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: `Portfolio Contact from ${formData.name}`,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      });
+    const subject = `Portfolio Inquiry from ${formData.name}`;
+    const bodyText = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-      const data = await response.json();
+    // 1. If Web3Forms Access Key is provided, submit silently via API
+    if (accessKey) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-      if (response.ok && (data.success === 'true' || data.success === true)) {
-        setSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error(data.message || 'Submission failed');
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formData.name,
+            email: formData.email,
+            message: formData.message,
+            subject: subject,
+          }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          setSubmitted(true);
+          setFormData({ name: '', email: '', message: '' });
+          setIsSubmitting(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('API submission failed or timed out:', err);
       }
-    } catch (err) {
-      console.warn('Direct API submission error, falling back to mailto client:', err);
-      const mailto = `mailto:${email}?subject=Portfolio Contact from ${encodeURIComponent(
-        formData.name
-      )}&body=${encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-      )}`;
-      window.location.href = mailto;
-      setSubmitted(true);
-    } finally {
-      setIsSubmitting(false);
     }
+
+    // 2. Fallback: Direct email dispatch so user is NEVER stuck on loading
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(bodyText)}`;
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(bodyText)}`;
+
+    try {
+      const newWin = window.open(gmailUrl, '_blank');
+      if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+        window.location.href = mailtoUrl;
+      }
+    } catch {
+      window.location.href = mailtoUrl;
+    }
+
+    setSubmitted(true);
+    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(false);
   };
 
   return (
