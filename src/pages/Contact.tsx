@@ -34,17 +34,17 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1de4de03-5d97-4fd7-a210-c9ca5f0b8fbe';
     const postData = new FormData();
+    postData.append('access_key', accessKey);
     postData.append('name', formData.name);
     postData.append('email', formData.email);
     postData.append('message', formData.message);
-    postData.append('_subject', formData.subject || `Portfolio Contact from ${formData.name}`);
-    postData.append('_captcha', 'false');
+    postData.append('subject', formData.subject || `Portfolio Contact from ${formData.name}`);
 
-    fetch(`https://formsubmit.co/ajax/${email}`, {
+    fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       body: postData,
-      headers: { Accept: 'application/json' },
     }).catch(console.error);
 
     setSubmitted(true);

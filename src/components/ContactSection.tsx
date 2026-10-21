@@ -37,59 +37,29 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1de4de03-5d97-4fd7-a210-c9ca5f0b8fbe';
     const subject = `Portfolio Inquiry from ${formData.name}`;
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
     try {
-      if (accessKey) {
-        // Send via Web3Forms API
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            access_key: accessKey,
-            name: formData.name,
-            email: formData.email,
-            message: formData.message,
-            subject: subject,
-          }),
-        });
+      const postData = new FormData();
+      postData.append('access_key', accessKey);
+      postData.append('name', formData.name);
+      postData.append('email', formData.email);
+      postData.append('message', formData.message);
+      postData.append('subject', subject);
+      postData.append('from_name', formData.name);
 
-        const data = await response.json();
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || 'Submission error');
-        }
-      } else {
-        // Send directly in background via FormSubmit without opening any app
-        const postData = new FormData();
-        postData.append('name', formData.name);
-        postData.append('email', formData.email);
-        postData.append('message', formData.message);
-        postData.append('_subject', subject);
-        postData.append('_captcha', 'false');
-        postData.append('_template', 'table');
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: postData,
+      });
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-        await fetch(`https://formsubmit.co/ajax/${email}`, {
-          method: 'POST',
-          body: postData,
-          headers: {
-            Accept: 'application/json',
-          },
-          signal: controller.signal,
-        }).catch((err) => {
-          console.log('Background dispatch completed:', err);
-        });
-
-        clearTimeout(timeoutId);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Submission error');
       }
     } catch (err) {
-      console.log('Submission processed:', err);
+      console.log('Submission handled:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);
