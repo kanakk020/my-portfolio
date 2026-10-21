@@ -7,7 +7,7 @@ interface ExperienceItem {
   organization: string;
   type: string;
   period: string;
-  location: string;
+  location?: string;
   hasCertificate?: boolean;
   responsibilities: string[];
 }
@@ -28,7 +28,6 @@ const professionalExperience: ExperienceItem[] = [
     organization: 'TektonTech Solutions',
     type: 'Software Engineering',
     period: "Aug'26 – Present",
-    location: 'Delhi NCR, India',
     responsibilities: [
       'Developed responsive application modules using React.js, Next.js, and TypeScript, focusing on dashboard functionality, user management, and UI consistency.',
       'Integrated APIs, database connectivity, and n8n-based email automation workflows.',
@@ -41,7 +40,6 @@ const professionalExperience: ExperienceItem[] = [
     organization: 'DigitalBuzz Pvt. Ltd',
     type: 'Software Engineering',
     period: "Aug'26 – Present",
-    location: 'Delhi NCR, India',
     responsibilities: [
       'Developed and enhanced responsive websites using React.js, Next.js, and Tailwind CSS.',
       'Implemented reusable UI components, animations, and interactive features.',
@@ -50,7 +48,7 @@ const professionalExperience: ExperienceItem[] = [
   },
   {
     id: 3,
-    role: 'Event Management Team Member',
+    role: 'Core Team Member',
     organization: 'AI Community',
     type: 'Community & Events',
     period: "Sept'24 – Present",
@@ -67,7 +65,7 @@ const professionalExperience: ExperienceItem[] = [
     organization: 'India Space Academy',
     type: 'Aerospace & Robotics',
     period: "Jan'26 – Feb'26",
-    location: 'National / Online',
+    location: 'Online',
     hasCertificate: true,
     responsibilities: [
       'Completed training and internship activities under the Winter Training Programme on Advanced Drone Technology.',
@@ -248,10 +246,12 @@ const VolunteeringSection = () => {
                       <Building size={13} />
                       <span className="text-white font-semibold">{exp.organization}</span>
                     </span>
-                    <span className="flex items-center gap-1 text-gray-400">
-                      <MapPin size={13} />
-                      <span>{exp.location}</span>
-                    </span>
+                    {exp.location && (
+                      <span className="flex items-center gap-1 text-gray-400">
+                        <MapPin size={13} />
+                        <span>{exp.location}</span>
+                      </span>
+                    )}
                   </div>
 
                   {/* Responsibilities */}

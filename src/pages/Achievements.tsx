@@ -49,7 +49,7 @@ const hackathons: HackathonDetail[] = [
     id: 1,
     name: 'Smart India Hackathon (SIH 2024)',
     result: 'Top 25 Teams',
-    location: 'National / Online',
+    location: 'Online',
     timeline: '2024',
     description:
       'Participated in Smart India Hackathon (SIH) 2024. Advanced through the internal hackathon round and secured a position in the top 25 teams. Collaborated on innovative tech solutions under time constraints, focusing on problem-solving, teamwork, and real-world application of skills.',

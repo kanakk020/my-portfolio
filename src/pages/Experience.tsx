@@ -8,7 +8,7 @@ interface ExperienceItem {
   organization: string;
   type: 'Internship' | 'Community Leadership' | 'Event Management';
   period: string;
-  location: string;
+  location?: string;
   description: string;
   responsibilities: string[];
   image?: string;
@@ -21,7 +21,6 @@ const experiences: ExperienceItem[] = [
     organization: 'TektonTech Solutions LLP',
     type: 'Internship',
     period: 'Oct 2026 – Dec 2026',
-    location: 'Delhi NCR, India',
     description:
       'Working as a full-stack software engineering intern contributing to client-facing web applications, responsive user interfaces, backend services, and agile product development.',
     responsibilities: [
@@ -153,10 +152,12 @@ const Experience = () => {
                     <Building size={15} />
                     <span>{exp.organization}</span>
                   </span>
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <MapPin size={15} />
-                    <span>{exp.location}</span>
-                  </span>
+                  {exp.location && (
+                    <span className="flex items-center gap-1.5 text-gray-400">
+                      <MapPin size={15} />
+                      <span>{exp.location}</span>
+                    </span>
+                  )}
                 </div>
 
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-4">
