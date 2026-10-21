@@ -43,7 +43,7 @@ const ContactSection = () => {
     try {
       if (accessKey) {
         // Send via Web3Forms API
-        await fetch('https://api.web3forms.com/submit', {
+        const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -57,6 +57,11 @@ const ContactSection = () => {
             subject: subject,
           }),
         });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Submission error');
+        }
       } else {
         // Send directly in background via FormSubmit without opening any app
         const postData = new FormData();

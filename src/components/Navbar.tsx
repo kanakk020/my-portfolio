@@ -20,13 +20,25 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
 
-      // Scroll Spy for active section indicator
+      // 1. Reset to Home if at top
       if (window.scrollY < 120) {
         setActiveSection('home');
         return;
       }
 
       const scrollPosition = window.scrollY + 160;
+
+      // 2. Clear spotlight completely if user is in Contact or Footer section
+      const contactEl = document.getElementById('contact');
+      if (contactEl) {
+        const contactTop = contactEl.getBoundingClientRect().top + window.scrollY;
+        if (scrollPosition >= contactTop - 60) {
+          setActiveSection('contact');
+          return;
+        }
+      }
+
+      // 3. Match centre nav items
       for (let i = navItems.length - 1; i >= 0; i--) {
         const section = document.getElementById(navItems[i].id);
         if (section) {
