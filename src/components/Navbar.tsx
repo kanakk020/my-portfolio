@@ -9,7 +9,6 @@ const navItems = [
   { name: 'Projects', id: 'projects' },
   { name: 'Experience', id: 'experience' },
   { name: 'Achievements', id: 'achievements' },
-  { name: 'Contact', id: 'contact' },
 ];
 
 const Navbar = () => {
@@ -22,14 +21,19 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 40);
 
       // Scroll Spy for active section indicator
-      const scrollPosition = window.scrollY + 200;
+      if (window.scrollY < 120) {
+        setActiveSection('home');
+        return;
+      }
+
+      const scrollPosition = window.scrollY + 160;
       for (let i = navItems.length - 1; i >= 0; i--) {
         const section = document.getElementById(navItems[i].id);
         if (section) {
-          const top = section.offsetTop;
-          if (scrollPosition >= top) {
+          const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+          if (scrollPosition >= sectionTop) {
             setActiveSection(navItems[i].id);
-            break;
+            return;
           }
         }
       }
@@ -42,11 +46,12 @@ const Navbar = () => {
 
   const scrollToSection = (id: string) => {
     setIsOpen(false);
+    setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      const navOffset = 80;
+      const navOffset = 70;
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navOffset;
+      const offsetPosition = Math.max(0, elementPosition - navOffset);
 
       window.scrollTo({
         top: offsetPosition,
@@ -110,7 +115,7 @@ const Navbar = () => {
             <span className="hidden sm:inline">Resume</span>
           </a>
 
-          {/* Let's Connect CTA */}
+          {/* Let's Connect CTA Button */}
           <button
             onClick={() => scrollToSection('contact')}
             className="btn-emerald text-xs sm:text-sm !py-2 !px-4 shadow-[0_0_20px_rgba(16,185,129,0.35)]"
